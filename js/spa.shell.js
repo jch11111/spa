@@ -30,12 +30,26 @@ var
     //----------------------- END UTILITY METHODS  -----------------------
 
     //----------------------- BEGIN DOM METHODS -----------------------
+    // Begin DOM method /setJqueryMap/
+    setJqueryMap = function () {
+        var $container = stateMap.$container;
+        jqueryMap = { $container: $container };
+    };
     //----------------------- END DOM METHODS  -----------------------
 
     //----------------------- BEGIN EVENT HANDLERS -----------------------
     //----------------------- END EVENT HANDLERS -----------------------
 
     //----------------------- BEGIN PUBLIC METHODS -----------------------
+    // Begin public method /initModule/
+    initModule = function ($container) {
+        stateMap.$container = $container;
+        $container.html(configMap.main_html);
+        setJqueryMap();
+    };
+    // End public method /initModule/
+    return { initModule: initModule };
+
     //----------------------- END PUBLIC METHODS  -----------------------
 
     //----------------------- BEGIN UTILITY METHODS -----------------------
