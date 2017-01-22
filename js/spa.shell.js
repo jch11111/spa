@@ -27,7 +27,7 @@ var
     //----------------------- END MODULE SCOPE VARIABLES -----------------------
 
     //----------------------- BEGIN UTILITY METHODS -----------------------
-    //----------------------- END UTILITY METHODS  -----------------------
+    //----------------------- END UTILITY METHODS  -----------------------g
 
     //----------------------- BEGIN DOM METHODS -----------------------
     // Begin DOM method /setJqueryMap/
