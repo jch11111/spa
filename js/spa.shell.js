@@ -3,10 +3,14 @@
 * Shell module for SP
 */
 
-//----------------------- BEGIN MODULE SCOPE VARIABLES -----------------------
 spa.shell = (function () {
+    //----------------------- BEGIN MODULE SCOPE VARIABLES -----------------------
+
 var
     configMap = {
+        anchor_schema_map: {
+            chat: { open: true, closed: true }
+        },
         main_html: String()
             + '<div class="spa-shell-head">'
             + '<div class="spa-shell-head-logo"></div>'
@@ -29,16 +33,43 @@ var
     },
     stateMap = { 
         $container          : null,
+        anchor_map          : {},
         is_chat_retracted   : true
     },
     jqueryMap = {},
-    setJqueryMap, toggleChat, onClickChat, initModule;
+    copyAnchorMap, setJqueryMap, toggleChat, 
+    changeAnchorPart, onHashchange,
+    onClickChat, initModule;
     //----------------------- END MODULE SCOPE VARIABLES -----------------------
 
     //----------------------- BEGIN UTILITY METHODS -----------------------
-    //----------------------- END UTILITY METHODS  -----------------------g
+    // Returns a copy of stored anchor map; minimized overhead
+    copyAnchorMap = function () {
+        return $.extend( true, {}, stateMap.anchor_map );
+    }
+    //----------------------- END UTILITY METHODS  ------------------------
 
     //----------------------- BEGIN DOM METHODS -----------------------
+    // Begin DIM method /changeAnchorPart/
+    // Purpose: Change parts of the URI anchor component
+    // Arguments:
+    //  * arg_map - The map describing what part of the URI anchor
+    //    we want changed
+    // Returns  : boolean
+    //  * true - the Anchor portion of the URI was updated
+    //  * false - the Anchor portion of the URI could not be updated
+    // Action : 
+    //  The current anchor rep stored in stateMap.anchor_map.
+    //  See uriAnchor for a discussion of encoding.
+    //  This method
+    //      * Creates a copy of this map using copyAnchorMap().
+    //      * Modifies the key values using arg_map.
+    //      * Manages the distinction between independent
+    //          and dependent values in the encoding.
+    //      * Attempts to change the URI using uriAnchor.
+    //      * Returns true on success and false on failure.
+    //
+
     // Begin DOM method /setJqueryMap/
     setJqueryMap = function () {
         var $container = stateMap.$container;
