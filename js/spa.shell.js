@@ -109,7 +109,12 @@ var
 
     //----------------------- BEGIN EVENT HANDLERS -----------------------
     onClickChat = function ( event ) {
-        toggleChat ( stateMap.is_chat_retracted );
+        if ( toggleChat ( stateMap.is_chat_retracted ) ) {
+            $.uriAnchor.setAnchor( {
+                chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
+            } );
+        }
+        
         return false;
     }
     //----------------------- END EVENT HANDLERS -----------------------
