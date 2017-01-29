@@ -68,7 +68,36 @@ var
     //          and dependent values in the encoding.
     //      * Attempts to change the URI using uriAnchor.
     //      * Returns true on success and false on failure.
-    //
+    changeAnchorPart = function ( arg_map ) {
+        var
+            anchor_map_revise = copyAnchorMap(),
+            bool_return = true,
+            key_name, key_name_dep;
+
+        // Begin merge changes into achor_map
+        KEYVAL:
+        for ( key_name in arg_map ) {
+            if ( arg_map.hasOwnProperty( key_name )) {
+
+                // skip dependent keys during iteration
+                if ( key_name.indexOf ('_') === 0 ) { continue KEYVAL; }
+
+                // update independent key value
+                anchor_map_revise[key_name] = arg_map[ key_name];
+
+                //update matching dependent key
+                key_name_dep = '_' + key_name;
+                if ( arg_map[key_name_dep] ) {
+                    anchor_map_revise[key_name_dep] = arg_map[key_name_dep];
+                }
+                else {
+                    delete anchor_map_revise[key_name_dep];
+                    delete anchor_map_revise['_s' + key_name_dep];
+                }
+            }
+        }
+        // End merge changes into anchor map
+    }
 
     // Begin DOM method /setJqueryMap/
     setJqueryMap = function () {
