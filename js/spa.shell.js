@@ -97,7 +97,20 @@ var
             }
         }
         // End merge changes into anchor map
+
+        // Begin attempt to update URL; revert if not successful
+        try {
+            $.uriAnchor.setAnchor( anchor_map_revise );
+        }
+        catch ( error ) {
+            // replace URI with existing state
+            $.uriAnchor.setAnchor( stateMap.anchor_map, null, true );
+            bool_return = false;
+        }
+        // End attempt to update URI
+        return bool_return;
     }
+    // End DOM method /changeAnchorPart
 
     // Begin DOM method /setJqueryMap/
     setJqueryMap = function () {
@@ -168,6 +181,39 @@ var
     //----------------------- END DOM METHODS  -----------------------
 
     //----------------------- BEGIN EVENT HANDLERS -----------------------
+    // Begin event handler /onHashChange/
+    // Purpose: Handles the hashchange event
+    // Arguments:
+    //  * event - jQuery event object
+    // Settings     : none
+    // Returns      : false
+    // Action       : 
+    //  * Parses the URI anchor component
+    //  * Compares proposed application state with current
+    //  * Adjusts the application only where proposed state
+    //      differs from existing
+    //
+    onHashchange = function () {
+        var
+            anchor_map_previous = copyAnchorMap(),
+            anchor_map_proposed,
+            _s_chat_previous, _s_chat_proposed,
+            s_chat_proposed;
+
+        //attempt to parse anchor
+        try { 
+            anchor_map_proposed = $.uriAnchor.makeAnchorMap(); 
+        }
+        catch (error) {
+            $.uriAnchor.setAnchor( anchor_map_previous, null, true );
+            return false;
+        }
+        //CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE 
+        //CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE 
+        //CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE 
+
+    }
+
     onClickChat = function ( event ) {
         if ( toggleChat ( stateMap.is_chat_retracted ) ) {
             $.uriAnchor.setAnchor( {
