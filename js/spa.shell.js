@@ -208,18 +208,40 @@ var
             $.uriAnchor.setAnchor( anchor_map_previous, null, true );
             return false;
         }
-        //CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE 
-        //CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE 
-        //CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE CONTINUE HERE 
+
+        stateMap.anchor_map = anchor_map_proposed;
+
+        // convenience vars
+        _s_chat_previous = anchor_map_previous._s_chat;
+        _s_chat_proposed = anchor_map_proposed._s_chat;
+
+        // Begin adjust chat component if changed
+        if (! anchor_map_previous 
+            || _s_chat_previous !== _s_chat_proposed) {
+            s_chat_proposed = anchor_map_proposed.chat;
+            switch ( s_chat_proposed ) {
+                case 'open':
+                    toggleChat(true);
+                    break;
+                case 'closed':
+                    toggleChat(false);
+                    break;
+                default:
+                    toggleChat(false);
+                    delete anchor_map_proposed.chat;
+                    $.uriAnchor.setAnchor( anchor_map_proposed, null, true );
+            }
+        }
+        // End adjust chat component if changed
+        
+        return false;
 
     }
 
     onClickChat = function ( event ) {
-        if ( toggleChat ( stateMap.is_chat_retracted ) ) {
-            $.uriAnchor.setAnchor( {
-                chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
-            } );
-        }
+        changeAnchorPart({
+            chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
+        });
         
         return false;
     }
@@ -242,6 +264,21 @@ var
         // test toggle
         setTimeout(function () { toggleChat(true);  }, 3000);
         setTimeout(function () { toggleChat(false); }, 8000);
+
+        // configure uriAnchor to use our schema
+        $.uriAnchor.configModule({
+            schema_map : configMap.anchor_schema_map
+        });
+
+        // Handle URI anchor change events
+        // This is done /after/ all feature modules are configured
+        // and initiated, otherwise they will not be ready to handle
+        // the trigger event, which is used to ensure the anchor
+        // is considered on-load
+        //
+        $(window)
+            .bind( 'hashchange', onHashchange )
+            .trigger( 'hashchange');
     };
     // End public method /initModule/
     return { initModule: initModule };
