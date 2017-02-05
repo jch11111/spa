@@ -262,8 +262,8 @@ var
             .click( onClickChat );
 
         // test toggle
-        setTimeout(function () { toggleChat(true);  }, 3000);
-        setTimeout(function () { toggleChat(false); }, 8000);
+        //setTimeout(function () { toggleChat(true);  }, 3000);
+        //setTimeout(function () { toggleChat(false); }, 8000);
 
         // configure uriAnchor to use our schema
         $.uriAnchor.configModule({
