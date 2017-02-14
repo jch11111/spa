@@ -261,10 +261,6 @@ var
             .attr( 'title', configMap.chat_retracted_title )
             .click( onClickChat );
 
-        // test toggle
-        //setTimeout(function () { toggleChat(true);  }, 3000);
-        //setTimeout(function () { toggleChat(false); }, 8000);
-
         // configure uriAnchor to use our schema
         $.uriAnchor.configModule({
             schema_map : configMap.anchor_schema_map
