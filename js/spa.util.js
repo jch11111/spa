@@ -40,7 +40,7 @@ spa.util = (function () {
     setConfigMap = function (arg_map) {
         var input_map       = arg_map.input_map,
             settable_map    = arg_map.settable_map,
-            config_map      = arg_map.config_map
+            config_map      = arg_map.config_map,
             key_name,
             error;
 
