@@ -64,10 +64,17 @@ configModule = function ( input_map ) {
 // End public method /configModule/
 
 // Begin public method /initModule/
-// Purpose      : Initialize module
+// Example      : spa.chat.initModule( $('#div_id') );
+// Purpose      :
+//      Directs chat to offer its capabilities to the user
 // Arguments    : 
-//  * $container the jquery element used by this feature
-// Returns      : true
+//      * $append_target ( example: $('#div_id') )
+//       A JQuery collection that should represent a single DOM container
+// Action       :
+//      Appends the chat slider to the provided container and fills it with HTML content.
+//       It then initialized elements, events, and handlers to provide the user with a 
+//       chat-room interface
+// Returns      : true on success, false on failure
 // Throws       : none
 initModule = function ( $container ) {
     $container.html(configMap.main_html);
