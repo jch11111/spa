@@ -102,7 +102,7 @@
     color           : #404040;
 }
 
-    .spa-chat-box input[type=text]:foxus {
+    .spa-chat-box input[type=text]:focus {
         background      : #fff;
     }
 
