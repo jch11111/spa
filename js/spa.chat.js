@@ -45,19 +45,64 @@ var
         slider_closed_em        : 2,
         slider_opened_title     : 'Click to close',
         slider_closed_title     : 'Click to open',
+        chat_model              : null,
+        people_model            : null,
+        set_chat_anchor         : null
     },
-    stateMap    = { $container : null },
+    stateMap    = { 
+        $append_target      : null,
+        position_type       : 'closed',
+        px_per_em           : 0,
+        slider_hidden_px    : 0,
+        slider_closed_px    : 0,
+        slider_opened_px    : 0
+    },
     jqueryMap   = {},
-    setJqueryMap, configModule, initModule;
+    setJqueryMap, getEmSize, setPxSizes, setSliderPosition, 
+    onClickToggle, configModule, initModule;
 //------------------------ BEGIN MODULE SCOPE VARIABLES -------------------------
+
 //------------------------ BEGIN UTILITY METHODS -------------------------
+    getEmSize = function (elem) {
+        return Number (
+            getComputedStyle( elem, '').fontSize.match(/\d*\.?\d*/) [0]
+        );
+    }
 //------------------------ END UTILITY METHODS -------------------------
+
 //------------------------ BEGIN DOM METHODS -------------------------
-// Begin DOM method /setJqueryMap/
-setJqueryMap = function () {
-    var $container = stateMap.$container;
-    jqueryMap = { $container : $container};
-};
+    // Begin DOM method /setJqueryMap/
+    setJqueryMap = function () {
+        var
+            $append_target = stateMap.$append_target,
+            $slider = $append_target.find( '.spa-chat' );
+
+        jqueryMap = {
+            $slider     : $slider,
+            $head       : $slider.find( '.spa-chat-head' ),
+            $toggle     : $slider.find( '.spa-chat-head-toggle' ),
+            $title      : $slider.find( '.spa-chat-head-title' ),
+            $sizer      : $slider.find( '.spa-chat-sizer' ),
+            $msgs       : $slider.find( '.spa-chat-msgs' ),
+            $box        : $slider.find( '.spa-chat-box' ),
+            $input      : $slider.find( '.spa-chat-input input[type=text]')
+        };
+    };
+    // End DOM method /setJqueryMap/
+
+    // Begin DOM method /setPxSizes/
+    setPxSizes = function () {
+        var px_per_em, opened_height_em;
+
+        px_per_em = getEmSize( jqueryMap.$slider.get(0) );
+
+        opened_height_em = configMap.slider_opened_em;
+
+        stateMap.px_per_em = px_per_em;
+    }
+    // End DOM method /setPxSizes/
+
+
 //------------------------ END DOM METHODS -------------------------
 //------------------------ BEGIN EVENT HANDLERS -------------------------
 //------------------------ END EVENT HANDLERS -------------------------
