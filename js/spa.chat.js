@@ -99,13 +99,18 @@ var
         opened_height_em = configMap.slider_opened_em;
 
         stateMap.px_per_em = px_per_em;
+        stateMap.slider_closed_px = configMap.slider_closed_em * px_per_em;
+        stateMap.slider_opened_px = configMap.slider_opened_em * px_per_em;
+        jqueryMap.$sizer.css({
+            height: ( opened_height_em - 2 ) * px_per_em
+        });
     }
     // End DOM method /setPxSizes/
-
-
 //------------------------ END DOM METHODS -------------------------
+
 //------------------------ BEGIN EVENT HANDLERS -------------------------
 //------------------------ END EVENT HANDLERS -------------------------
+
 //------------------------ BEGIN PUBLIC METHOD -------------------------
 // Begin public method /configModule/
 // Example      : spa.chat.configModule({ slider_open_em : 18 });
@@ -174,6 +179,41 @@ initModule = function ( $container ) {
 //      * false - requested state was not achieved
 // Throws       : none
 //  
+setSliderPosition = function ( position_type, callback ) {
+    var 
+        height_px, animate_time, slider_title, toggle_text;
+
+    //return true if slider is already in requested position
+    if (stateMap.position_type === position_type) {
+        return true;
+    }
+
+    //prepare animate parameters
+    switch (position_type) {
+        case 'opened'   :
+            height_px       = stateMap.slider_opened_px;
+            animate_time    = configMap.slider_open_time;
+            slider_title    = configMap.slider_opened_title;
+            toggle_text     = '=';
+        break;
+
+        case 'hidden'   :
+            height_px       = 0;
+            animate_time    = configMap.slider_open_time;
+            slider_title    = '';
+            toggle_text     = '+';
+        break;
+
+        case 'closed'   :
+            height_px       = stateMap.slider_closed_px;
+            animate_time    = configMap.slider_close_time;
+            slider_title    = configMap.slider_closed_title;
+            toggle_text     = '+';
+        break;
+        //bail for unknown position type
+        default : return false;
+    }
+};
 
 // return public methods
 return {
