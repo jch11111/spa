@@ -183,7 +183,7 @@ setSliderPosition = function ( position_type, callback ) {
     var 
         height_px, animate_time, slider_title, toggle_text;
 
-    //return true if slider is already in requested position
+    //return true if slider already in requested position
     if (stateMap.position_type === position_type) {
         return true;
     }
