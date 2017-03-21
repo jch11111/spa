@@ -108,8 +108,7 @@ var
     // End DOM method /setPxSizes/
 //------------------------ END DOM METHODS -------------------------
 
-//------------------------ BEGIN EVENT HANDLERS -------------------------
-//------------------------ END EVENT HANDLERS -------------------------
+
 
 //------------------------ BEGIN PUBLIC METHOD -------------------------
 // Begin public method /configModule/
@@ -212,8 +211,36 @@ setSliderPosition = function ( position_type, callback ) {
         break;
         //bail for unknown position type
         default : return false;
+
+        // animate slider position change
+        stateMap.position_type = '';
+        jqueryMap.$slider.animate(
+            { height : height_px },
+            animate_time,
+            function () {
+                jqueryMap.$toggle.prop( 'title', slider_title );
+                jqueryMap.$toggle.text( toggle_text );
+                stateMap.position_type = position_type;
+                if ( callback ) { callback(jqueryMap.$slider ); }
+            }
+        );
+        return true;
     }
 };
+// End public method /setSliderPosition/
+
+//------------------------ BEGIN EVENT HANDLERS -------------------------
+onClickToggle = function ( event ) {
+    var set_chat_anchor = configMap.set_chat_anchor;
+    if ( stateMap.position_type === 'opened' ) {
+        set_chat_anchor( 'closed' );
+    }
+    else if ( stateMap.position_type === 'closed' ) {
+        set_chat_anchor( 'opened' );
+    }
+    return false;
+}
+//------------------------ END EVENT HANDLERS -------------------------
 
 // return public methods
 return {
