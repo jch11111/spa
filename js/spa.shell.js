@@ -23,7 +23,7 @@ spa.shell = (function () {
 var
     configMap = {
         anchor_schema_map: {
-            chat: { open: true, closed: true }
+            chat: { opened: true, closed: true }
         },
         main_html: String()
             + '<div class="spa-shell-head">'
@@ -36,7 +36,6 @@ var
             + '<div class="spa-shell-main-content"></div>'
         + '</div>'
         + '<div class="spa-shell-foot"></div>'
-        + '<div class="spa-shell-chat"></div>'
         + '<div class="spa-shell-modal"></div>',
         chat_extend_height: 200,
         chat_extend_time: 250,
@@ -46,14 +45,12 @@ var
         chat_retracted_title: 'Click to extend'
     },
     stateMap = { 
-        $container          : null,
         anchor_map          : {},
-        is_chat_retracted   : true
     },
     jqueryMap = {},
-    copyAnchorMap, setJqueryMap, toggleChat, 
+    copyAnchorMap, setJqueryMap, 
     changeAnchorPart, onHashchange,
-    onClickChat, initModule;
+    setChatAnchor, onClickChat, initModule;
     //----------------------- END MODULE SCOPE VARIABLES -----------------------
 
     //----------------------- BEGIN UTILITY METHODS -----------------------
@@ -130,67 +127,10 @@ var
     setJqueryMap = function () {
         var $container = stateMap.$container;
         jqueryMap = {
-            $container: $container,
-            $chat: $container.find( '.spa-shell-chat')
+            $container: $container
         };
     };
     // End DOM method /setJqueryMap/
-
-    // Begin DOM Method toggleChat/
-    // Purpose : Extends or retracts chat slider
-    // Arguments    :
-    //      * do_extend     - if true, extends slider; if false retracts
-    //      * callback      - optional function to execute at end of animation
-    // Settings     : 
-    //      * chat_extend_time, chat_retract_time
-    //      * chat_extend_height, chat_retract_height
-    // Returns      : Boolean
-    //      * true          - slider animation activated
-    //      * false         - slider animation not activated
-    // State        : sets stateMap.is_chat_retracted
-    //      * true          - slider is retracte
-    //      * false         - slider is extended
-    toggleChat = function ( do_extend, callback ) {
-        var
-            px_chat_ht  = jqueryMap.$chat.height(),
-            is_open     = px_chat_ht === configMap.chat_extend_height,
-            is_closed   = px_chat_ht === configMap.chat_retract_height,
-            is_sliding  = ! is_open && ! is_closed;
-        
-        // avoid race conditions
-        if ( is_sliding ) { return false; }
-
-        // Begin extend chat slider
-        if ( do_extend ) {
-            jqueryMap.$chat.animate (
-                { height: configMap.chat_extend_height },
-                configMap.chat_extend_time,
-                function () { 
-                    jqueryMap.$chat.attr(
-                        'title', configMap.chat_retracted_title
-                    );
-                    stateMap.is_chat_retracted = false;
-                    if ( callback ) { callback (jqueryMap.$chat); }
-                }
-            );
-            return true;
-        }
-        // End extend chat slider
-
-        // Begin retract chat slider
-        jqueryMap.$chat.animate(
-            { height: configMap.chat_retract_height },
-            configMap.chat_retract_time,
-            function () {
-                stateMap.is_chat_retracted = true;
-                if (callback) { callback(jqueryMap.$chat); }
-            }
-        );
-
-        return true;
-        // End retract chat slider
-    };
-    // End DOM method /toggleChat/
 
     //----------------------- END DOM METHODS  -----------------------
 
@@ -205,14 +145,14 @@ var
     //  * Parses the URI anchor component
     //  * Compares proposed application state with current
     //  * Adjusts the application only where proposed state
-    //      differs from existing
+    //      differs from existing and is allowed by anchor schema
     //
     onHashchange = function () {
         var
-            anchor_map_previous = copyAnchorMap(),
+            _s_chat_previous, _s_chat_proposed, s_chat_proposed,
             anchor_map_proposed,
-            _s_chat_previous, _s_chat_proposed,
-            s_chat_proposed;
+            is_ok = true,
+            anchor_map_previous = copyAnchorMap();
 
         //attempt to parse anchor
         try { 
