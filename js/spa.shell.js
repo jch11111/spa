@@ -170,15 +170,14 @@ var
         _s_chat_proposed = anchor_map_proposed._s_chat;
 
         // Begin adjust chat component if changed
-        if (! anchor_map_previous 
-            || _s_chat_previous !== _s_chat_proposed) {
+        if (! anchor_map_previous || _s_chat_previous !== _s_chat_proposed) {
             s_chat_proposed = anchor_map_proposed.chat;
             switch ( s_chat_proposed ) {
-                case 'open':
-                    toggleChat(true);
+                case 'opened':
+                    is_ok = spa.chat.setSliderPosition( 'opened' );
                     break;
                 case 'closed':
-                    toggleChat(false);
+                    is_ok = spa.chat.setSliderPosition( 'closed' );
                     break;
                 default:
                     toggleChat(false);
@@ -188,9 +187,21 @@ var
         }
         // End adjust chat component if changed
         
-        return false;
+        // Begin revert anchor if slider change denied
+        if ( !is_ok ) {
+            if ( anchor_map_previous ) {
+                $uriAnchor.setAnchor( anchor_map_previous, null, true );
+                stateMap.anchor_map = anchor_map_previous;
+            } else {
+                delete anchor_map_proposed.chat;
+                $.uriAnchor.setAnchor( anchor_map_proposed, null, true );
+            }
+        }
+        // End revert anchor if slider change denied
 
+        return false;
     }
+    // End event handler /onHashChange/
 
     onClickChat = function ( event ) {
         changeAnchorPart({
@@ -198,6 +209,24 @@ var
         });
         
         return false;
+    }
+    // End  event handler /onHashChange/
+    //----------------------- END EVENT HANDLERS -----------------------
+
+    //----------------------- BEGIN EVENT HANDLERS -----------------------
+    // Begin callback method /setChatAnchor/
+    // Example      : setChatAnchor( 'closed' );
+    // Purpose      : Change the chat component of the anchor
+    // Arguments    :
+    //      * position_type - may be 'closed' or 'open'
+    // Action       :
+    //      Changes the URI anchor parameter 'chat' to the requested value if possible
+    // Returns      :
+    //      * true - requested anchor part was updated
+    //      * false - requested anchor part was not updated
+    // Throws       : none
+    setChatAnchor = function ( position_type ) {
+        return changeAnchorPart({ chat : position_type });
     }
     //----------------------- END EVENT HANDLERS -----------------------
 
