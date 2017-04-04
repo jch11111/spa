@@ -213,6 +213,32 @@ spa.chat = (function () {
     //-------------------- END EVENT HANDLERS --------------------
 
     //------------------- BEGIN PUBLIC METHODS -------------------
+    // Begin public method /handleResize/
+    // Purpose      :
+    //          Given a window resize event, adjust the presentation
+    //          provided by this module if needed
+    // Actions      :
+    //          If the window height or width falls below
+    //          a given threshold, resize the chat slider for the
+    //          reduced window size.
+    // Returns      : Boolean
+    //          * false     - resize not considered
+    //          * true      - resize considered
+    //
+    handleResize = function () {
+        //don't do anything if we don't have a slider container
+        if ( !jqueryMap.$slider ) {
+            return false;
+        }
+
+        setPxSizes();
+        if ( stateMap.position_type === 'opened' ) {
+            jqueryMap.$slider.css({ height: stateMap.slider_opened_px});
+        }
+        return true;
+    };
+
+
     // Begin public method /configModule/
     // Example   : spa.chat.configModule({ slider_open_em : 18 });
     // Purpose   : Configure the module prior to initialization
