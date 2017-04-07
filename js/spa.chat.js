@@ -237,6 +237,7 @@ spa.chat = (function () {
         }
         return true;
     };
+    // End public method /handleResize/
 
 
     // Begin public method /configModule/

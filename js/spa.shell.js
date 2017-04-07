@@ -18,6 +18,7 @@ spa.shell = (function () {
           anchor_schema_map: {
               chat: { opened: true, closed: true }
           },
+          resize_interval : 200, //milliseconds interval for throttling resize
           main_html: String()
             + '<div class="spa-shell-head">'
               + '<div class="spa-shell-head-logo"></div>'
@@ -32,11 +33,14 @@ spa.shell = (function () {
             + '<div class="spa-shell-modal"></div>'
       },
 
-      stateMap = { anchor_map: {} },
+      stateMap = { 
+        anchor_map: {},
+        resize_idto: undefined  //resize timeout id
+      },
       jqueryMap = {},
 
       copyAnchorMap, setJqueryMap,
-      changeAnchorPart, onHashchange,
+      changeAnchorPart, onHashchange, onResize
       setChatAnchor, initModule;
     //----------------- END MODULE SCOPE VARIABLES ---------------
 
@@ -121,6 +125,20 @@ spa.shell = (function () {
     //--------------------- END DOM METHODS ----------------------
 
     //------------------- BEGIN EVENT HANDLERS -------------------
+    // Begin Event handler /onResize/
+    onResize = function () {
+        if ( stateMap.resize_idto ) {
+            return true;    //if there is already a timer running, return
+        }
+
+        spa.chat.handlerResize();
+        stateMap.resize_idto = setTimeout(function () {
+            stateMap.resize_idto = undefined;
+        }, 
+        configMap.resize_interval);
+        
+    }
+
     // Begin Event handler /onHashchange/
     // Purpose    : Handles the hashchange event
     // Arguments  :
