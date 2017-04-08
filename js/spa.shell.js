@@ -40,7 +40,7 @@ spa.shell = (function () {
       jqueryMap = {},
 
       copyAnchorMap, setJqueryMap,
-      changeAnchorPart, onHashchange, onResize
+      changeAnchorPart, onHashchange, onResize,
       setChatAnchor, initModule;
     //----------------- END MODULE SCOPE VARIABLES ---------------
 
@@ -132,12 +132,11 @@ spa.shell = (function () {
         }
 
         spa.chat.handlerResize();
-        stateMap.resize_idto = setTimeout(function () {
-            stateMap.resize_idto = undefined;
-        }, 
+        stateMap.resize_idto = setTimeout(function () { stateMap.resize_idto = undefined;  }, 
         configMap.resize_interval);
         
-    }
+        return true;
+    };
 
     // Begin Event handler /onHashchange/
     // Purpose    : Handles the hashchange event
@@ -271,6 +270,7 @@ spa.shell = (function () {
         // is considered on-load
         //
         $(window)
+          .bind('resize', onResize)
           .bind('hashchange', onHashchange)
           .trigger('hashchange');
 
