@@ -54,7 +54,7 @@ spa.util_b = (function () {
             regex = configMap.regex_encode_html;
         }
         return input_str.replace(regex, function ( match, name ) {
-            retrun lookup_map[match] || '';
+            return lookup_map[match] || '';
         });
     };
     // End encodeHtml
