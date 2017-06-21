@@ -10,13 +10,55 @@ spa.model = (function () {
         configMap = { anon_id: 'a0' },
         stateMap = {
             anon_user       : null,
+            cid_serial      : 0,
             people_cid_map  : {},
-            people_db       : TAFFY()
+            people_db       : TAFFY(),
+            user            : null
         },
 
         isFakeData = true,
 
-        personProto, makePerson, people, initModule;
+        personProto, makeCid, clearPeopleDb, completeLogin, 
+        makePerson, removePerson, people, initModule;
+
+        // The people object API
+        // --------------------------------------------
+        // The people object is available at spa.model.people.
+        // The people object provides methods and events to manage
+        // a colleciton of person objects. Its public methods include:
+        //      *   get_user() - return the current user person object.
+        //          If the current user is not signed-in, an anonymous person 
+        //          object is returned.
+        //      *   get_db() - return the TaffyDB database of all the person
+        //          objects - including the current user - presorted.
+        //      *   get_by_cid -( <client_id> ) - return a person object with 
+        //          provided unique id.
+        //      *   login ( <user_name> ) - login as the user with the provided
+        //          user name. The current user object is changed to refelct
+        //          the new identity. Successful sompletion of login
+        //          published a 'spa-login' global custom event.
+        //      *   logout() - rever the current user object to anonymous.
+        //          This method publishes a 'spa-logout' global custom event
+        // jQuery global custom events published by the object include:
+        //      *   spa-login - This is published when a user login process
+        //          completes. The updated user object is provided as data.
+        //      *   spa-logout - This is published when a logout completes.
+        //          The former user object is provided as data.
+        //
+        // Each person is represented by a person object.
+        // Person objects provided the following methods:
+        //      *   get_is_user() - return true if object is the current user
+        //      *   get_is_anon() - return true if object is anonymous
+        //
+        // The attributes for a person object include:
+        //      *   cid - string client id. This is always defined, and
+        //          is only different from the id attribute
+        //          if the client data is not synced with the backend.
+        //      *   id - the unique id. This may be undefined if the 
+        //          object is not synced with the backend.
+        //      *   name - the string name of the user.
+        //      *   css_map - a map of attributes used for avatar
+        //          presentation.
 
         personProto = {
             get_is_user : function () {
@@ -24,6 +66,20 @@ spa.model = (function () {
             },
             get_is_anon : function () {
                 return this.cid === stateMap.anon_user.cid;
+            }
+        };
+
+        makeCid = function () {
+            return 'c' + String( stateMap.cid_serial++ );
+        };
+
+        clearPeopleDb = function () {
+            var user = stateMap.user;
+            stateMap.people_db = TAFFY();
+            stateMap.people_cid_map = {};
+            if (user) {
+                stateMap.people_db.insert( user );
+                stateMap.people_cid_map[ user.cid ] = user;
             }
         };
 
