@@ -83,6 +83,18 @@ spa.model = (function () {
             }
         };
 
+        completeLogin = function (user_list) {
+            var user_map = user_list[0];
+            delete stateMap.people_cid_map[user_map.cid];
+            stateMap.user.cid           = user_map._id;
+            stateMap.user.id            = user_map._id;
+            stateMap.user.css_map       = user_map.css_map;
+            stateMap.people_cid_map[ user_map._id ] = stateMap.user;
+
+            //When we add chat, we should join here
+            $.gevent.publish( 'spa-login', [ stateMap.user ])
+        };
+
         makePerson = function (person_map) {
             var person,
                 cid         = person_map.cid,
@@ -105,6 +117,21 @@ spa.model = (function () {
             stateMap.people_db.insert( person );
             
             return person;
+        };
+
+        removePerson = function ( person ) {
+            if ( !person ) return false;
+
+            //can't remove anonymous person
+            if ( person.id === configMap.anon_id ) {
+                return false;
+            }
+
+            stateMap.people_db( { cid: person.cid }).remove();
+            if ( person.cid ) {
+                delete stateMap.people_cid_map[ person.cid ];
+            }
+            return true;
         };
 
         people = {
