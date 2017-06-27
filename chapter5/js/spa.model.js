@@ -134,10 +134,35 @@ spa.model = (function () {
             return true;
         };
 
-        people = {
-            get_db          : function () { return stateMap.people_db; },
-            get_cid_map     : function () { return stateMap.people_cid_map; }
-        }
+        people = (function () {
+            var get_by_cid, get_db, get_user, login, logout;
+
+            get_by_cid = function ( cid ) {
+                return stateMap.people_cid_map[ cid ];
+            };
+
+            get_db = function () { return stateMap.people_db; };
+
+            get_user = function () { return stateMap.user; };
+
+            login = function ( name ) {
+                var sio = isFakeData ? spa.fake.mockSio : spa.data.getSio();
+
+                stateMap.user = makePerson({
+                    cid         : makeCid(),
+                    css_map     : { top: 25, left: 25, 'background-color': '#8f8'},
+                    name        : name
+                });
+
+                sio.on( 'userupdate', completeLogin );
+
+                sio.emit( 'adduser', {
+                    cid         : stateMap.user.cid,
+                    css_map     : stateMap.user.css_map,
+                    name        : stateMap.user.name
+                });
+            };
+        }());
 
         initModule = function () {
             var i, people_list, person_map;
