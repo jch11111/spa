@@ -162,6 +162,17 @@ spa.model = (function () {
                     name        : stateMap.user.name
                 });
             };
+
+            logout = function () {
+                var is_remvoved, user = stateMap.user;
+                // when we add chat, we should leave the chatroom here
+
+                is_remvoved         = removePerson( user );
+                stateMap.user       = stateMap.anon_user;
+
+                $.gevent.publish( 'spa-logout', [ user ] );
+                return is_remvoved;
+            };
         }());
 
         initModule = function () {
