@@ -173,6 +173,14 @@ spa.model = (function () {
                 $.gevent.publish( 'spa-logout', [ user ] );
                 return is_remvoved;
             };
+
+            return {
+                get_by_cid  : get_by_cid,
+                get_db      : get_db,
+                get_user    : get_user,
+                login       : login,
+                logout      : logout
+            };
         }());
 
         initModule = function () {
