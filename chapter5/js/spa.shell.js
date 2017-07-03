@@ -131,7 +131,7 @@ spa.shell = (function () {
             return true;    //if there is already a timer running, return
         }
 
-        spa.chat.handlerResize();
+        spa.chat.handleResize();
         stateMap.resize_idto = setTimeout(function () { stateMap.resize_idto = undefined;  }, 
         configMap.resize_interval);
         
