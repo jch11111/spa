@@ -11,6 +11,7 @@ spa.model = (function () {
         stateMap = {
             anon_user       : null,
             cid_serial      : 0,
+            is_connected    : false,
             people_cid_map  : {},
             people_db       : TAFFY(),
             user            : null
@@ -19,7 +20,7 @@ spa.model = (function () {
         isFakeData = true,
 
         personProto, makeCid, clearPeopleDb, completeLogin, 
-        makePerson, removePerson, people, initModule;
+        makePerson, removePerson, people, chat, initModule;
 
         // The people object API
         // --------------------------------------------
@@ -95,6 +96,34 @@ spa.model = (function () {
         //      * spa-updatechat - this is published when a new message is received or sent. A map of 
         //      the form: { dest_id: <chatee_id>, dest_name: <chatee_name>, sender_id: <sender_id>, msg_text: <message_content> }
         //      is provided as data.
+
+        chat = (function () {
+            var 
+                _publish_listchange, 
+                _update_list, _leave_chat, join_chat;
+
+            // Begin internal methods
+            _update_list = function ( arg_list ) {
+                var i, person_map, make_person_map, 
+                    people_list = arg_list[0];
+
+                clearPeopleDb();
+
+                PERSON:
+                for ( i = 0; i < people_list.length; i++ ) {
+                    person_map = people_list[i];
+
+                    if (!person_map.name) { continue PERSON; }
+
+                    // if user defined, update css_map and skip remainder
+                    if ( stateMap.user && stateMap.user.id === person_map._id ) {
+                        stateMap.user.css_map = person_map.css_map;
+                        continue PERSON;
+                    }
+                }
+
+            }
+        }());
 
         personProto = {
             get_is_user : function () {
